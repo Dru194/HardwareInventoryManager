@@ -1,0 +1,93 @@
+import javax.swing.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+//Here, I am creating a custom console component by using existing classes and interfaces within the Swing framework
+public class ConsoleTextPane extends JTextPane implements ActionListener {
+
+    ControlPanel controlPanel; //I initialize our ControlPanel so it can be set later on
+    public ConsoleTextPane(){
+        this.setEditable(false);
+        this.setFont(new Font("Arial", Font.PLAIN, 18));
+        this.setText("Welcome to your Hardware Inventory Manager!\n\nLet's get to work!\n\n");
+
+    }
+
+    //Implement our actionPerformed function so that our console can be aware of button presses from our ControlPanel
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource().equals(controlPanel.orderButton)){
+            logOrder();
+        }
+
+        if(e.getSource().equals(controlPanel.archiveButton)){
+            logArchive();
+        }
+
+        if(e.getSource().equals(controlPanel.replenishButton)){
+            logReplenish();
+        }
+
+        if(e.getSource().equals(controlPanel.addPartsButton)){
+            logAddParts();
+        }
+    }
+
+    //ControlPanel Setter
+    public void setControlPanel(ControlPanel controlPanel){
+        this.controlPanel = controlPanel;
+    }
+
+
+    //Test logging functions for the buttons.
+    //Output is printed to both the IDE console and our custom, scrollable console
+    private void logOrder(){
+        String message = "Starting new order application...\n";
+        System.out.print(message);
+        try {
+            appendStringToConsole(message);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void logArchive(){
+        String message = "Opening Archive...\n";
+        System.out.print(message);
+        try {
+            appendStringToConsole(message);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void logReplenish(){
+        String message = "Starting stock replenishment application...\n";
+        System.out.print(message);
+        try {
+            appendStringToConsole(message);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void logAddParts(){
+        String message = "Adding a new part to the inventory...\n";
+        System.out.print(message);
+        try {
+            appendStringToConsole(message);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //this function appends strings to the console
+    private void appendStringToConsole(String message) throws BadLocationException {
+        Document doc = this.getDocument();
+        doc.insertString(doc.getLength(), message, null);
+        this.setCaretPosition(doc.getLength());
+    }
+}
