@@ -6,13 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 //Here, I am creating a custom console component by using existing classes and interfaces within the Swing framework
-public class ConsoleTextPane extends JTextPane implements ActionListener {
+public class ConsoleTextPane extends JScrollPane implements ActionListener {
 
     ControlPanel controlPanel; //I initialize our ControlPanel so it can be set later on
+    JTextPane console;
     public ConsoleTextPane(){
-        this.setEditable(false);
-        this.setFont(new Font("Arial", Font.PLAIN, 18));
-        this.setText("Welcome to your Hardware Inventory Manager!\n\nLet's get to work!\n\n");
+        this.setBounds(300,600,800,300);
+        this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        console = new JTextPane();
+        this.setViewportView(console);
+        console.setEditable(false);
+        console.setFont(new Font("Arial", Font.PLAIN, 18));
+        console.setText("Welcome to your Hardware Inventory Manager!\n\nLet's get to work!\n\n");
 
     }
 
@@ -86,8 +91,8 @@ public class ConsoleTextPane extends JTextPane implements ActionListener {
 
     //this function appends strings to the console
     private void appendStringToConsole(String message) throws BadLocationException {
-        Document doc = this.getDocument();
+        Document doc = console.getDocument();
         doc.insertString(doc.getLength(), message, null);
-        this.setCaretPosition(doc.getLength());
+        console.setCaretPosition(doc.getLength());
     }
 }
