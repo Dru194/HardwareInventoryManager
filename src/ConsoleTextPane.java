@@ -6,10 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 //Here, I am creating a custom console component by using existing classes and interfaces within the Swing framework
-public class ConsoleTextPane extends JScrollPane implements ActionListener {
+public class ConsoleTextPane extends JScrollPane implements ActionListener { // ConsoleTextPane is now an extended JScroll Pane instead of JTextPane
 
     ControlPanel controlPanel; //I initialize our ControlPanel so it can be set later on
-    JTextPane console;
+    JTextPane console; //console text pane is created here instead of in main method
     public ConsoleTextPane(){
         this.setBounds(300,600,800,300);
         this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
