@@ -46,4 +46,17 @@ public class DatabaseConnection {
         }
         return result;
     }
+
+    /*public boolean completeOrder(){
+        try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)){
+            Statement statement = connection.createStatement()) {
+                String orderQuery = "";
+                try(ResultSet resultSet = statement.executeQuery(initQuery)){
+
+
+                }
+        } catch (SQLException e) {
+            return false;
+        }
+    }*/
 }
