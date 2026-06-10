@@ -47,13 +47,19 @@ public class DatabaseConnection {
         }
     }
 
-    public boolean completeOrder(List<String[]> orderData){
+    public boolean completeOrder(List<String[]> orderData, int transactionType){
 
         if(orderData == null || orderData.isEmpty()){
             return false;
         }
+        String updateQuery;
+        if(transactionType == 0){
+            updateQuery = "UPDATE inventory SET stock = stock - ? WHERE productName = ?";
+        }
+        else{
+            updateQuery = "UPDATE inventory SET stock = stock + ? WHERE productName = ?";
+        }
 
-        String updateQuery = "UPDATE inventory SET stock = stock - ? WHERE productName = ?";
         try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)){
 

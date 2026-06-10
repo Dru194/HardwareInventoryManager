@@ -27,7 +27,7 @@ public class ConsoleTextPane extends JScrollPane implements ActionListener { // 
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(controlPanel.orderButton)){
             logOrder();
-            CustomerOrderForm customerOrderForm = new CustomerOrderForm(this, inventoryTablePane);
+            new CustomerOrderForm(this, inventoryTablePane);
         }
 
         if(e.getSource().equals(controlPanel.archiveButton)){
@@ -36,6 +36,7 @@ public class ConsoleTextPane extends JScrollPane implements ActionListener { // 
 
         if(e.getSource().equals(controlPanel.replenishButton)){
             logReplenish();
+            new StockOrderForm(this, inventoryTablePane);
         }
 
         if(e.getSource().equals(controlPanel.addPartsButton)){

@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-public class CustomerOrderForm extends JFrame implements ActionListener {
+public class StockOrderForm extends JFrame implements ActionListener {
     JButton submitButton;
     JButton addToOrderButton;
     JTextField productNameField;
@@ -19,8 +19,8 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
     DefaultTableModel model;
     ConsoleTextPane consoleTextPane;
     InventoryTablePane inventoryTablePane;
-    CustomerOrderForm(ConsoleTextPane consoleTextPane, InventoryTablePane inventoryTablePane){
-        this.setTitle("Customer Order Form");
+    StockOrderForm(ConsoleTextPane consoleTextPane, InventoryTablePane inventoryTablePane){
+        this.setTitle("Stock Replenishment Order Form");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
         this.setLayout(null);
@@ -72,6 +72,7 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
             if(orderData.isEmpty()){
                 model.removeRow(0);
             }
+            System.out.println("Adding item to order...");
             String inputPartName = productNameField.getText();
             String inputPartAmount = productAmountField.getText();
             String[] orderRow = {inputPartName, inputPartAmount};
@@ -80,7 +81,8 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
         }
 
         if(e.getSource().equals(this.submitButton)){
-            if(Main.databaseConnection.completeOrder(orderData, 0)){
+            System.out.println("Submitting Order...");
+            if(Main.databaseConnection.completeOrder(orderData, 1)){
                 inventoryTablePane.updateTable();
                 String msg = "Order has been processed successfully!";
                 JOptionPane.showMessageDialog(this, msg);
