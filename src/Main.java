@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.LogManager;
@@ -7,6 +8,7 @@ import java.util.logging.Logger;
 public class Main {
 
     private static final Logger logger = Logger.getLogger(Main.class.getName());
+    static DatabaseConnection databaseConnection;
 
     void main() {
 
@@ -28,7 +30,7 @@ public class Main {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() { // everything within this function acts as a main function within the Swing framework
-                DatabaseConnection databaseConnection = new DatabaseConnection(logger); // this class is meant to manage database connections
+                databaseConnection = new DatabaseConnection(logger); // this class is meant to manage database connections
 
                 JFrame mainWindow = new JFrame(); //root JFrame is my main GUI window
                 mainWindow.setTitle("Hardware Inventory Manager");

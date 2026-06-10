@@ -1,6 +1,5 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,8 +10,8 @@ import java.util.List;
 public class CustomerOrderForm extends JFrame implements ActionListener {
     JButton submitButton;
     JButton addToOrderButton;
-    JTextField partNameField;
-    JFormattedTextField partAmountField;
+    JTextField productNameField;
+    JFormattedTextField productAmountField;
     JTable orderTable;
     String[] tableHeaders = {"Part Name", "Amount"};
     Object[][] tableData = {{"Add an order to begin", "N/A"}};
@@ -32,15 +31,17 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
         textFieldPanel.setBackground(new Color(88,88,88));
         textFieldPanel.setLayout(new GridLayout(1,5));
         JLabel partNameFieldLabel = new JLabel("Part Name");
-        partNameField = new JTextField();
+        partNameFieldLabel.setHorizontalAlignment(JLabel.CENTER);
+        productNameField = new JTextField();
         JLabel partAmountFieldLabel = new JLabel("Amount");
-        partAmountField = setupIntegerField();
+        partAmountFieldLabel.setHorizontalAlignment(JLabel.CENTER);
+        productAmountField = setupIntegerField();
         addToOrderButton = new JButton("Add Item");
         addToOrderButton.addActionListener(this);
         textFieldPanel.add(partNameFieldLabel);
-        textFieldPanel.add(partNameField);
+        textFieldPanel.add(productNameField);
         textFieldPanel.add(partAmountFieldLabel);
-        textFieldPanel.add(partAmountField);
+        textFieldPanel.add(productAmountField);
         textFieldPanel.add(addToOrderButton);
 
         JScrollPane currentOrderPanel = new JScrollPane();
@@ -51,8 +52,13 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
         currentOrderPanel.add(orderTable);
         currentOrderPanel.setViewportView(orderTable);
 
+        submitButton = new JButton("Submit");
+        submitButton.setBounds(100, 460, 80, 30);
+        submitButton.addActionListener(this);
+
         this.add(textFieldPanel);
         this.add(currentOrderPanel);
+        this.add(submitButton);
     }
 
     public Object[][] getOrderDataObjectArray(){
@@ -76,8 +82,8 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
                 model.removeRow(0);
             }
             System.out.println("Adding item to order...");
-            String inputPartName = partNameField.getText();
-            String inputPartAmount = partAmountField.getText();
+            String inputPartName = productNameField.getText();
+            String inputPartAmount = productAmountField.getText();
             String[] orderRow = {inputPartName, inputPartAmount};
             orderData.add(orderRow);
             model.addRow(orderRow);
@@ -85,6 +91,12 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
 
         if(e.getSource().equals(this.submitButton)){
             System.out.println("Submitting Order...");
+            if(Main.databaseConnection.completeOrder(orderData)){
+                System.out.println("Order has been submitted");
+            }
+            else{
+                System.out.println("This order has failed to be processed.");
+            }
         }
     }
 

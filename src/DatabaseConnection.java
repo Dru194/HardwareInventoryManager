@@ -8,17 +8,19 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/hardware_store_db";
     private static final String USER = "root";
     private static final String PASSWORD = "Password123!";
+    private Logger logger;
 
     List<String[]> queryData = new ArrayList<>();
     DatabaseConnection(Logger logger){
+        this.logger = logger;
         //Connection is created in the constructor for now... will probably find a different way to do this
         try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
             Statement statement = connection.createStatement()) {
             logger.info("Database connection is successful");
-            String initQuery = "SELECT partName, stock, price FROM inventory";
+            String initQuery = "SELECT productName, stock, price FROM inventory";
             try(ResultSet resultSet = statement.executeQuery(initQuery)){
                 while(resultSet.next()){
-                    String partName = resultSet.getString("partName");
+                    String partName = resultSet.getString("productName");
                     int stock = resultSet.getInt("stock");
                     float price = resultSet.getFloat("price");
                     queryData.add(new String[]{partName, String.valueOf(stock), String.valueOf(price)});
@@ -47,16 +49,49 @@ public class DatabaseConnection {
         return result;
     }
 
-    /*public boolean completeOrder(){
-        try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)){
-            Statement statement = connection.createStatement()) {
-                String orderQuery = "";
-                try(ResultSet resultSet = statement.executeQuery(initQuery)){
+    public boolean completeOrder(List<String[]> orderData){
 
+        if(orderData == null || orderData.isEmpty()){
+            return false;
+        }
 
+        String updateQuery = "UPDATE inventory SET stock = stock - ? WHERE productName = ?";
+        try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)){
+
+            connection.setAutoCommit(false);
+
+            try{
+                for(String[] item : orderData){
+                    String productName = item[0];
+                    int orderAmount = Integer.parseInt(item[1]);
+
+                    preparedStatement.setInt(1, orderAmount);
+                    preparedStatement.setString(2, productName);
+
+                    preparedStatement.addBatch();
                 }
+
+                int[] updateCounts = preparedStatement.executeBatch();
+
+                for(int count: updateCounts){
+                    if(count == Statement.EXECUTE_FAILED || count == 0){
+                        logger.warning("Order failed: A part was not found in the inventory.");
+                        connection.rollback();
+                        return false;
+                    }
+                }
+
+                connection.commit();
+                logger.info("Order completed successfully");
+                return true;
+            } catch (Exception e) {
+                logger.warning("Order could not be processed!");
+                connection.rollback();
+                return false;
+            }
         } catch (SQLException e) {
             return false;
         }
-    }*/
+    }
 }
