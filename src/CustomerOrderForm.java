@@ -17,7 +17,9 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
     Object[][] tableData = {{"Add an order to begin", "N/A"}};
     List<String[]> orderData = new ArrayList<>();
     DefaultTableModel model;
-    CustomerOrderForm(ConsoleTextPane consoleTextPane){
+    ConsoleTextPane consoleTextPane;
+    InventoryTablePane inventoryTablePane;
+    CustomerOrderForm(ConsoleTextPane consoleTextPane, InventoryTablePane inventoryTablePane){
         this.setTitle("Customer Order Form");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setResizable(false);
@@ -25,6 +27,9 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
         this.setSize(800, 625);
         this.setVisible(true);
         this.requestFocus();
+
+        this.consoleTextPane = consoleTextPane;
+        this.inventoryTablePane = inventoryTablePane;
 
         JPanel textFieldPanel = new JPanel();
         textFieldPanel.setBounds(100, 100, 600, 40);
@@ -61,20 +66,6 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
         this.add(submitButton);
     }
 
-    public Object[][] getOrderDataObjectArray(){
-        if(orderData == null || orderData.isEmpty()){
-            return new Object[0][0];
-        }
-
-        Object[][] result = new Object[orderData.size()][];
-
-        for(int i = 0; i < orderData.size(); i++){
-            result[i] = orderData.get(i);
-        }
-        return result;
-    }
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(this.addToOrderButton)){
@@ -92,10 +83,17 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
         if(e.getSource().equals(this.submitButton)){
             System.out.println("Submitting Order...");
             if(Main.databaseConnection.completeOrder(orderData)){
-                System.out.println("Order has been submitted");
+                inventoryTablePane.updateTable();
+                String msg = "Order has been processed successfully!";
+                JOptionPane.showMessageDialog(this, msg);
+                consoleTextPane.appendStringToConsole(msg + "\n");
+                dispose();
             }
             else{
-                System.out.println("This order has failed to be processed.");
+                String msg = "Order has failed to process. This order will be closed";
+                JOptionPane.showMessageDialog(this, msg);
+                consoleTextPane.appendStringToConsole(msg + "\n");
+                dispose();
             }
         }
     }

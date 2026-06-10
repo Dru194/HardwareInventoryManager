@@ -8,45 +8,43 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/hardware_store_db";
     private static final String USER = "root";
     private static final String PASSWORD = "Password123!";
-    private Logger logger;
 
     List<String[]> queryData = new ArrayList<>();
-    DatabaseConnection(Logger logger){
-        this.logger = logger;
+    DatabaseConnection(){
         //Connection is created in the constructor for now... will probably find a different way to do this
+        if (getInventory()){
+            String msg = "Inventory has been updated";
+            Main.logger.info(msg);
+        }
+        else{
+            String msg = "Inventory has failed to update";
+            Main.logger.warning(msg);
+        }
+    }
+
+    public boolean getInventory(){
         try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
             Statement statement = connection.createStatement()) {
-            logger.info("Database connection is successful");
+            Main.logger.info("Database connection is successful");
             String initQuery = "SELECT productName, stock, price FROM inventory";
+            this.queryData = new ArrayList<>();
             try(ResultSet resultSet = statement.executeQuery(initQuery)){
                 while(resultSet.next()){
                     String partName = resultSet.getString("productName");
                     int stock = resultSet.getInt("stock");
                     float price = resultSet.getFloat("price");
-                    queryData.add(new String[]{partName, String.valueOf(stock), String.valueOf(price)});
+                    this.queryData.add(new String[]{partName, String.valueOf(stock), String.valueOf(price)});
                 }
 
+                return true;
             }
 
 
         } catch (SQLException e) {
             //this should be a logging situation "WARNING: DB is not connected"
-            logger.warning("Failed to connect to database -> " + e.getMessage());
+            Main.logger.warning("Failed to connect to database -> " + e.getMessage());
+            return false;
         }
-    }
-
-    //this method is so that the rest of the project components can get data as needed.
-    public Object[][] getQueryDataObjectArray(){
-        if(queryData == null || queryData.isEmpty()){
-            return new Object[0][0];
-        }
-
-        Object[][] result = new Object[queryData.size()][];
-
-        for(int i = 0; i < queryData.size(); i++){
-            result[i] = queryData.get(i);
-        }
-        return result;
     }
 
     public boolean completeOrder(List<String[]> orderData){
@@ -76,22 +74,36 @@ public class DatabaseConnection {
 
                 for(int count: updateCounts){
                     if(count == Statement.EXECUTE_FAILED || count == 0){
-                        logger.warning("Order failed: A part was not found in the inventory.");
+                        Main.logger.warning("Order failed: A part was not found in the inventory.");
                         connection.rollback();
                         return false;
                     }
                 }
 
                 connection.commit();
-                logger.info("Order completed successfully");
+                Main.logger.info("Order completed successfully");
                 return true;
             } catch (Exception e) {
-                logger.warning("Order could not be processed!");
+                Main.logger.warning("Order failed: A part was not found in the inventory.");
                 connection.rollback();
                 return false;
             }
         } catch (SQLException e) {
             return false;
         }
+    }
+
+    //this method is so that the rest of the project components can get data as needed.
+    public Object[][] getQueryDataObjectArray(){
+        if(queryData == null || queryData.isEmpty()){
+            return new Object[0][0];
+        }
+
+        Object[][] result = new Object[queryData.size()][];
+
+        for(int i = 0; i < queryData.size(); i++){
+            result[i] = queryData.get(i);
+        }
+        return result;
     }
 }

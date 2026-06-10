@@ -10,6 +10,7 @@ public class ConsoleTextPane extends JScrollPane implements ActionListener { // 
 
     ControlPanel controlPanel; //I initialize our ControlPanel so it can be set later on
     JTextPane console; //console text pane is created here instead of in main method
+    InventoryTablePane inventoryTablePane;
     public ConsoleTextPane(){
         this.setBounds(300,600,800,300);
         this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -26,7 +27,7 @@ public class ConsoleTextPane extends JScrollPane implements ActionListener { // 
     public void actionPerformed(ActionEvent e) {
         if(e.getSource().equals(controlPanel.orderButton)){
             logOrder();
-            CustomerOrderForm customerOrderForm = new CustomerOrderForm(this);
+            CustomerOrderForm customerOrderForm = new CustomerOrderForm(this, inventoryTablePane);
         }
 
         if(e.getSource().equals(controlPanel.archiveButton)){
@@ -53,47 +54,39 @@ public class ConsoleTextPane extends JScrollPane implements ActionListener { // 
     private void logOrder(){
         String message = "Starting new order application...\n";
         System.out.print(message);
-        try {
-            appendStringToConsole(message);
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
-        }
+        appendStringToConsole(message);
     }
 
     private void logArchive(){
         String message = "Opening Archive...\n";
         System.out.print(message);
-        try {
-            appendStringToConsole(message);
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
-        }
+        appendStringToConsole(message);
     }
 
     private void logReplenish(){
         String message = "Starting stock replenishment application...\n";
         System.out.print(message);
-        try {
-            appendStringToConsole(message);
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
-        }
+        appendStringToConsole(message);
     }
 
     private void logAddParts(){
         String message = "Adding a new part to the inventory...\n";
         System.out.print(message);
-        try {
-            appendStringToConsole(message);
-        } catch (BadLocationException e) {
-            throw new RuntimeException(e);
-        }
+        appendStringToConsole(message);
     }
 
     //this function appends strings to the console
-    private void appendStringToConsole(String message) throws BadLocationException {
+    public void appendStringToConsole(String message){
         Document doc = console.getDocument();
-        doc.insertString(doc.getLength(), message, null);
+        try {
+            doc.insertString(doc.getLength(), message, null);
+        } catch (BadLocationException e) {
+            throw new RuntimeException(e);
+        }
         console.setCaretPosition(doc.getLength());
+    }
+
+    public void setInventoryTablePane(InventoryTablePane inventoryTablePane){
+        this.inventoryTablePane = inventoryTablePane;
     }
 }

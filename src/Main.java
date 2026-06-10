@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class Main {
 
-    private static final Logger logger = Logger.getLogger(Main.class.getName());
+    public static final Logger logger = Logger.getLogger(Main.class.getName());
     static DatabaseConnection databaseConnection;
 
     void main() {
@@ -30,7 +30,7 @@ public class Main {
 
         SwingUtilities.invokeLater(new Runnable() {
             public void run() { // everything within this function acts as a main function within the Swing framework
-                databaseConnection = new DatabaseConnection(logger); // this class is meant to manage database connections
+                databaseConnection = new DatabaseConnection(); // this class is meant to manage database connections
 
                 JFrame mainWindow = new JFrame(); //root JFrame is my main GUI window
                 mainWindow.setTitle("Hardware Inventory Manager");
@@ -42,7 +42,7 @@ public class Main {
                 ConsoleTextPane consoleTextPane = new ConsoleTextPane(); //This custom object will be my text output
                 mainWindow.add(consoleTextPane); //add the console to our root JFrame
 
-                InventoryTablePane inventoryTablePane = new InventoryTablePane(databaseConnection); //this is my table class
+                InventoryTablePane inventoryTablePane = new InventoryTablePane(); //this is my table class
                 mainWindow.add(inventoryTablePane);
 
                 ControlPanel controlPanel = new ControlPanel(); //create the custom panel for user input
@@ -50,6 +50,7 @@ public class Main {
 
                 controlPanel.setActionListeners(consoleTextPane); //this makes the console aware of the controlPanel buttons
                 consoleTextPane.setControlPanel(controlPanel);//I use a setter instead of a constructor to resolve circular dependency
+                consoleTextPane.setInventoryTablePane(inventoryTablePane);
 
                 mainWindow.setVisible(true);
                 mainWindow.requestFocus();
