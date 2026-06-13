@@ -99,6 +99,26 @@ public class DatabaseConnection {
         }
     }
 
+    public boolean addProduct(Object [] newProductData){
+
+        String insertQuery = "INSERT INTO inventory (productName, stock, price) VALUES (?,?,?)";
+        try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+            Main.logger.info("Database connection is successful");
+
+            preparedStatement.setString(1, (String) newProductData[0]);
+            preparedStatement.setInt(2, (Integer) newProductData[1]);
+            preparedStatement.setDouble(3, (Double) newProductData[2]);
+
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            Main.logger.warning("Database error: " + e.getMessage());
+            return false;
+        }
+    }
+
     //this method is so that the rest of the project components can get data as needed.
     public Object[][] getQueryDataObjectArray(){
         if(queryData == null || queryData.isEmpty()){

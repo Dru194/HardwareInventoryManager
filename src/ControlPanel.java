@@ -6,7 +6,7 @@ public class ControlPanel extends JPanel{
     int controlPanelHeight = 900;
 
     //buttons need to be initialized here so they can be linked to an actionListener in the setter function
-    JButton addPartsButton;
+    JButton addProductButton;
     JButton replenishButton;
     JButton orderButton;
     JButton archiveButton;
@@ -39,10 +39,10 @@ public class ControlPanel extends JPanel{
         replenishButton.setFocusable(false);
         this.add(replenishButton);
 
-        addPartsButton = new JButton("Add A New Part");
-        addPartsButton.setBounds(15, 300, controlPanelWidth - 30, 60);
-        addPartsButton.setFocusable(false);
-        this.add(addPartsButton);
+        addProductButton = new JButton("Add A New Product");
+        addProductButton.setBounds(15, 300, controlPanelWidth - 30, 60);
+        addProductButton.setFocusable(false);
+        this.add(addProductButton);
     }
 
 
@@ -51,6 +51,6 @@ public class ControlPanel extends JPanel{
         orderButton.addActionListener(console);
         archiveButton.addActionListener(console);
         replenishButton.addActionListener(console);
-        addPartsButton.addActionListener(console);
+        addProductButton.addActionListener(console);
     }
 }
