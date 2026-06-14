@@ -115,7 +115,7 @@ public class DatabaseConnection {
         }
     }
 
-    public boolean archiveOrder(List<String[]> orderData, int transactionType){
+    public void archiveOrder(List<String[]> orderData, int transactionType){
         String insertQuery = "INSERT INTO orders (orderItems, orderType) VALUES (?, ?)";
         try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)){
@@ -127,11 +127,8 @@ public class DatabaseConnection {
             else{
                 preparedStatement.setString(2, "STOCK");
             }
-            int rowsInserted = preparedStatement.executeUpdate();
-            return rowsInserted > 0;
         } catch (SQLException e) {
             Main.logger.warning("Database error: " + e.getMessage());
-            return false;
         }
     }
 
