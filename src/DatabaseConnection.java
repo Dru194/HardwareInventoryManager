@@ -115,6 +115,31 @@ public class DatabaseConnection {
         }
     }
 
+    public boolean getOrders(){
+        try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            Statement statement = connection.createStatement()) {
+            Main.logger.info("Database connection is successful");
+            String initQuery = "SELECT orderDate, orderType, orderItems FROM orders";
+            this.queryData = new ArrayList<>();
+            try(ResultSet resultSet = statement.executeQuery(initQuery)){
+                while(resultSet.next()){
+                    String orderDate = resultSet.getString("orderDate");
+                    String orderType = resultSet.getString("orderType");
+                    String orderItems = formatReceipt(resultSet.getString("orderItems"));
+                    this.queryData.add(new String[]{orderDate, orderType, orderItems});
+                }
+
+                return true;
+            }
+
+
+        } catch (SQLException e) {
+            //this should be a logging situation "WARNING: DB is not connected"
+            Main.logger.warning("Failed to connect to database -> " + e.getMessage());
+            return false;
+        }
+    }
+
     public void archiveOrder(List<String[]> orderData, int transactionType){
         String insertQuery = "INSERT INTO orders (orderItems, orderType) VALUES (?, ?)";
         try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -127,6 +152,7 @@ public class DatabaseConnection {
             else{
                 preparedStatement.setString(2, "STOCK");
             }
+            preparedStatement.execute();
         } catch (SQLException e) {
             Main.logger.warning("Database error: " + e.getMessage());
         }
@@ -155,8 +181,19 @@ public class DatabaseConnection {
         String[] stringArray;
         for(int i = 0; i < orderData.size(); i++){
             stringArray = orderData.get(i);
-            result.append(stringArray[0]).append(",").append(stringArray[1]).append(";");
+            result.append(stringArray[0]).append(": ").append(stringArray[1]).append(";");
         }
         return result.toString();
+    }
+
+    public String formatReceipt(String orderItems){
+        StringBuilder receipt = new StringBuilder();
+        receipt.append("<html>");
+        String[] receiptItems = orderItems.split(";");
+        for(int i = 0; i < receiptItems.length; i++){
+            receipt.append(receiptItems[i]).append("<br>");
+        }
+        receipt.append("</html>");
+        return receipt.toString();
     }
 }

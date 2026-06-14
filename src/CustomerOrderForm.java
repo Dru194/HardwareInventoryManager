@@ -13,7 +13,7 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
     JTextField productNameField;
     JFormattedTextField productAmountField;
     JTable orderTable;
-    String[] tableHeaders = {"Part Name", "Amount"};
+    String[] columnHeaders = {"Part Name", "Amount"};
     Object[][] tableData = {{"Add an order to begin", "N/A"}};
     List<String[]> orderData = new ArrayList<>();
     DefaultTableModel model;
@@ -52,7 +52,12 @@ public class CustomerOrderForm extends JFrame implements ActionListener {
         JScrollPane currentOrderPanel = new JScrollPane();
         currentOrderPanel.setBounds(100,140, 600, 300);
         currentOrderPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        model = new DefaultTableModel(tableData, tableHeaders);
+        model = new DefaultTableModel(tableData, columnHeaders){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         orderTable = new JTable(model);
         currentOrderPanel.add(orderTable);
         currentOrderPanel.setViewportView(orderTable);

@@ -32,6 +32,7 @@ public class ConsoleTextPane extends JScrollPane implements ActionListener { // 
 
         if(e.getSource().equals(controlPanel.archiveButton)){
             logArchive();
+            new ArchivedOrders();
         }
 
         if(e.getSource().equals(controlPanel.replenishButton)){

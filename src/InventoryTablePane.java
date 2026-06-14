@@ -12,7 +12,12 @@ public class InventoryTablePane extends JScrollPane {
         this.tableData = Main.databaseConnection.getQueryDataObjectArray();
         this.setBounds(300, 0, 800, 600);
         this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        model = new DefaultTableModel(tableData, columnHeaders);
+        model = new DefaultTableModel(tableData, columnHeaders){
+            @Override
+            public boolean isCellEditable(int row, int column){
+                return false;
+            }
+        };
         inventoryTable = new JTable(model);
         this.setViewportView(inventoryTable);
     }
