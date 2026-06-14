@@ -20,7 +20,6 @@ public class InventoryTablePane extends JScrollPane {
     public void updateTable(){
         Main.databaseConnection.getInventory();
         this.tableData = Main.databaseConnection.getQueryDataObjectArray();
-        System.out.println(Arrays.deepToString(this.tableData));
         model.setDataVector(tableData, columnHeaders);
     }
 

@@ -84,6 +84,7 @@ public class StockOrderForm extends JFrame implements ActionListener {
             System.out.println("Submitting Order...");
             if(Main.databaseConnection.completeOrder(orderData, 1)){
                 inventoryTablePane.updateTable();
+                Main.databaseConnection.archiveOrder(orderData, 1);
                 String msg = "Order has been processed successfully!";
                 JOptionPane.showMessageDialog(this, msg);
                 consoleTextPane.appendStringToConsole(msg + "\n");
